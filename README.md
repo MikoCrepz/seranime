@@ -26,4 +26,12 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 ---
 
 ## 📁 Struktur Folder
+/
+├── index.html
+├── episode.html
+├── style.css
+├── script.js
+├── img/
+│ └── Seranime_bg
+│ └── Seranime_no_bg
 
