@@ -25,6 +25,7 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 ---
 
 ## 📁 Struktur Folder
+```
 /
 ├── index.html
 ├── episode.html
@@ -33,6 +34,7 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 ├── img/
 │   ├── Seranime_bg.png
 │   └── Seranime_no_bg.png
+```
 
 ---
 
