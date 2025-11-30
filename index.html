@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-1118731569640862">
+    <title>SeraNime - Nonton Anime Gratis</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="img/Seranime_no_bg.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="img/Seranime_no_bg.png" alt="" class="logoweb">
+                <h1>Seranime</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="ongoing">Ongoing</a></li>
+                    <li><a href="#" class="nav-link" data-page="complete">List Anime</a></li>
+                    <li><a href="#" class="nav-link" data-page="schedule">Jadwal Rilis</a></li>
+                    <li><a href="#" class="nav-link" data-page="genre">Genre</a></li>
+                    <li><a href="#" class="nav-link" onclick="openBugReportModal(); return false;"><i class="fas fa-bug"></i> Report Bug</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Cari anime...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </main>
+
+    <!-- Modal Player -->
+<div id="player-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="player-title">Nonton Anime</h2>
+        <div class="video-container">
+                <iframe id="stream-frame" src="" frameborder="0" allowfullscreen></iframe>
+            
+        </div>
+    </div>
+</div>
+
+<div id="supportModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+
+      <h2>🔔 Dukung Admin Agar Web Tetap Hidup</h2>
+      <p>Donate dan gabung server discord kita</p>
+      <a class="btn-donate" href="https://sociabuzz.com/seranime/tribe">Donate</a>
+    
+      <a class="btn-discord" href="https://discord.gg/m8Kydvz658" target="_blank" rel="noopener">Join Discord</a>
+
+      <div class="checkbox-row">
+        <label>
+          <input type="checkbox" id="dontShowAgain"> Don't show this again
+        </label>
+      </div>
+    </div>
+  </div>
+<div id="bug-report-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeBugReportModal()">&times;</span>
+        <h2>Laporan Bug</h2>
+        <form id="bug-report-form">
+            <label for="bug-description">Deskripsi Bug:</label>
+            <textarea id="bug-description" name="bug_description" rows="4" required placeholder="Jelaskan bug yang Anda temukan..."></textarea>
+
+            <label for="page-url">URL Halaman:</label>
+            <input type="text" id="page-url" name="page_url" readonly>
+
+            <label for="page-title">Judul Halaman:</label>
+            <input type="text" id="page-title" name="page_title" readonly>
+
+            <button type="submit">Kirim Laporan</button>
+        </form>
+    </div>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>
