@@ -54,3 +54,10 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 
 ---
 
+## ❤️ Dukungan
+
+Jika suka project ini: 
+- ⭐ Beri star pada repository ini
+- 🔄 Share ke teman -
+
+
