@@ -20,7 +20,6 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 - **HTML**
 - **CSS**
 - **JavaScript**
-- **JSON**
 - Hosting: **Vercel / Netlify / GitHub Pages**
 
 ---
@@ -34,3 +33,18 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 ├── img/
 │   ├── Seranime_bg.png
 │   └── Seranime_no_bg.png
+
+---
+
+## 🚀 Cara Menjalankan di Lokal
+
+1. Clone repository:
+   ```bash
+   git clone https://github.com/MikoCrepz/seranime.git
+
+2. Masuk ke folder project:
+   ```bash
+   cd seranime
+
+---
+
