@@ -32,6 +32,5 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
 ├── style.css
 ├── script.js
 ├── img/
-│ └── Seranime_bg
-│ └── Seranime_no_bg
-
+│   ├── Seranime_bg.png
+│   └── Seranime_no_bg.png
