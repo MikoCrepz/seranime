@@ -46,5 +46,9 @@ Project ini dibangun menggunakan HTML, CSS, dan JavaScript tanpa framework berat
    ```bash
    cd seranime
 
+3. Jalankan
+   ```bash
+   start index.html
+
 ---
 
