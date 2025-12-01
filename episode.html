@@ -438,6 +438,9 @@
                         <p><strong>Judul:</strong> <span id="info-title">Judul Tidak Diketahui</span></p>
                         <p><strong>Ditayangkan:</strong> <span id="info-releasedOn">Tanggal Rilis Tidak Diketahui</span></p>
                         <p><strong>Anime:</strong> <a id="info-anime-link" href="#" target="_blank">Lihat Detail Anime</a></p>
+                        <div class="con-apk">
+                        <a href="https://sfile.mobi/TqVjkLKfoRE" class="apkd">Download Apk</a>
+                        </div>
                     </div>
                     <div class="video-container">
                         <iframe id="stream-frame" src="" frameborder="0" allowfullscreen></iframe>
@@ -453,13 +456,7 @@
                             
                         </div>
                     </div>
-                    <div id="download-options-container" class="download-options">
-                        <h3>Download:</h3>
-                        <div id="download-options-list" class="download-group">
-                        </div>
-                    </div>
-                </div>
-                <div class="right-column">
+                    <div class="right-column">
                     
                     <div id="episode-list-container" class="episode-list-section">
                         <h3>Daftar Episode:</h3>
@@ -468,6 +465,12 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <div id="download-options-container" class="download-options">
+                        <h3>Download:</h3>
+                        <div id="download-options-list" class="download-group">
+                        </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -514,139 +517,151 @@
             }
         }
 
-        async function loadEpisode() {
-            document.getElementById('error-display').style.display = 'none';
-            document.getElementById('content-container').style.display = 'block';
-            document.getElementById('episode-title').textContent = 'Loading...';
-            document.getElementById('info-title').textContent = 'Judul Tidak Diketahui';
-            document.getElementById('info-releasedOn').textContent = 'Tanggal Rilis Tidak Diketahui';
-            document.getElementById('info-anime-link').href = '#';
-            document.getElementById('info-anime-link').textContent = 'Lihat Detail Anime';
-            document.getElementById('server-options-list').innerHTML = '<p>Tunggu...</p>';
-            document.getElementById('download-options-list').innerHTML = '<p>Tunggu...</p>';
-            document.getElementById('episode-list-grid').innerHTML = '<p>Mengambil daftar episode...</p>'; // Update element untuk daftar episode
+                // Load Episode - DIPERBAIKI untuk mengirim streamUrl dan serverList ke renderEpisode
+async function loadEpisode() {
+    document.getElementById('error-display').style.display = 'none';
+    document.getElementById('content-container').style.display = 'block';
+    document.getElementById('episode-title').textContent = 'Loading...';
+    document.getElementById('info-title').textContent = 'Judul Tidak Diketahui'; // Ini akan diganti nanti
+    document.getElementById('info-releasedOn').textContent = 'Tanggal Rilis Tidak Diketahui'; // Ini akan diganti nanti
+    document.getElementById('info-anime-link').href = '#';
+    document.getElementById('info-anime-link').textContent = 'Lihat Detail Anime';
+    document.getElementById('server-options-list').innerHTML = '<p>Tunggu...</p>';
+    document.getElementById('download-options-list').innerHTML = '<p>Tunggu...</p>';
+    document.getElementById('episode-list-grid').innerHTML = '<p>Mengambil daftar episode...</p>';
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const episodeSlug = urlParams.get('slug');
+    const urlParams = new URLSearchParams(window.location.search);
+    const episodeSlug = urlParams.get('slug');
 
-            if (!episodeSlug) {
-                showError('Episode slug tidak ditemukan di URL.');
-                return;
-            }
+    if (!episodeSlug) {
+        showError('Episode slug tidak ditemukan di URL.');
+        return;
+    }
 
-            try {
-                // Ambil detail episode dari API Otakudesu structure
-                const rawData = await fetchAPI(`/anime/episode/${episodeSlug}`);
-                console.log("Raw API Response untuk /anime/episode:", rawData); // Debug log
+    try {
+        console.log(`[DEBUG Episode.html] Memuat episode: ${episodeSlug}`);
+        // Ambil detail episode dari API Otakudesu structure
+        const rawData = await fetchAPI(`/anime/episode/${episodeSlug}`);
+        console.log("[DEBUG Episode.html] Raw API Response untuk /anime/episode:", rawData);
 
-                if (rawData.status !== 'success') {
-                    throw new Error('Gagal memuat detail episode dari Otakudesu structure.');
-                }
-
-                currentEpisodeData = rawData.data;
-                console.log("Data episode dari API Otakudesu:", currentEpisodeData); // Debug log
-
-                const streamUrl = currentEpisodeData.stream_url;
-
-                if (!streamUrl) {
-                    console.error("stream_url tidak ditemukan dalam respons API episode Otakudesu structure.");
-                    throw new Error('URL streaming tidak ditemukan.');
-                }
-
-                
-                const serverList = currentEpisodeData.stream_servers || [];
-
-                
-                const animeIdFromEpisode = currentEpisodeData.anime?.slug; 
-                let animeId = null;
-                if (animeIdFromEpisode) {
-                    const urlParts = animeIdFromEpisode.split('/');
-                    animeId = urlParts[urlParts.length - 2] || urlParts[urlParts.length - 1];
-                    if (animeId.endsWith('/')) animeId = animeId.slice(0, -1);
-                }
-
-                if (animeId) {
-                    console.log(`Mengambil detail anime: ${animeId} untuk daftar episode...`); // Debug log
-                    const animeDetailData = await fetchAPI(`/anime/anime/${animeId}`);
-                    if (animeDetailData.status === 'success') {
-                        currentAnimeEpisodes = animeDetailData.data?.episode_lists || [];
-                        console.log(`Daftar episode didapat, jumlah: ${currentAnimeEpisodes.length}`); // Debug log
-                    } else {
-                        console.warn("Gagal mengambil detail anime untuk daftar episode.");
-                        currentAnimeEpisodes = [];
-                    }
-                } else {
-                    console.warn("animeId tidak ditemukan di data episode. Tidak bisa mengambil daftar episode untuk Prev/Next atau Daftar Episode.");
-                    currentAnimeEpisodes = [];
-                }
-
-                renderEpisode(streamUrl, serverList);
-
-            } catch (error) {
-                showError(`Gagal memuat episode: ${error.message}`);
-            }
+        if (rawData.status !== 'success') {
+            throw new Error('Gagal memuat detail episode dari Otakudesu structure.');
         }
+
+        currentEpisodeData = rawData.data;
+        console.log("[DEBUG Episode.html] Data episode dari API:", currentEpisodeData);
+
+        // --- PERBAIKAN: Ambil stream_url dan stream_servers ---
+        const streamUrl = currentEpisodeData.stream_url; // Ambil dari stream_url
+        const serverList = currentEpisodeData.stream_servers || []; // Ambil dari stream_servers
+        // --- AKHIR PERBAIKAN ---
+
+        if (!streamUrl) {
+            console.error("[ERROR Episode.html] stream_url tidak ditemukan dalam respons API episode Otakudesu structure.", currentEpisodeData);
+            throw new Error('URL streaming tidak ditemukan.');
+        }
+
+        // Ambil animeId untuk mendapatkan daftar episode
+        const animeIdFromEpisode = currentEpisodeData.anime?.slug; // Ambil animeId dari data episode
+        let animeId = null;
+        if (animeIdFromEpisode) {
+            const urlParts = animeIdFromEpisode.split('/');
+            animeId = urlParts[urlParts.length - 2] || urlParts[urlParts.length - 1];
+            if (animeId.endsWith('/')) animeId = animeId.slice(0, -1);
+        }
+
+        // Ambil daftar episode dari anime induk
+        if (animeId) {
+            console.log(`[DEBUG Episode.html] Mengambil detail anime: ${animeId} untuk daftar episode...`);
+            const animeDetailData = await fetchAPI(`/anime/anime/${animeId}`);
+            if (animeDetailData.status === 'success') {
+                currentAnimeEpisodes = animeDetailData.data?.episode_lists || [];
+                console.log(`[DEBUG Episode.html] Daftar episode dari anime detail (jumlah: ${currentAnimeEpisodes.length}):`, currentAnimeEpisodes);
+            } else {
+                console.warn("[WARN Episode.html] Gagal mengambil detail anime untuk daftar episode.");
+                currentAnimeEpisodes = []; // Biarkan kosong jika gagal
+            }
+        } else {
+            console.warn("[INFO Episode.html] animeId tidak ditemukan di data episode. Tidak bisa mengambil daftar episode untuk Prev/Next atau Daftar Episode.");
+            currentAnimeEpisodes = [];
+        }
+
+        // Panggil render dengan streamUrl dan serverList
+        renderEpisode(streamUrl, serverList); // Kirim streamUrl dan serverList
+
+    } catch (error) {
+        console.error("[ERROR Episode.html] Error di loadEpisode:", error);
+        showError(`Gagal memuat episode: ${error.message}`);
+    }
+}
+
+        function renderEpisode(streamUrl, serverList) { // Terima streamUrl dan serverList dari loadEpisode
+    if (!currentEpisodeData) return; // Pastikan currentEpisodeData ada
+
+    // --- PERBAIKAN: Ambil title dan releasedOn dari field yang benar ---
+    const title = currentEpisodeData.episode || currentEpisodeData.title || 'Judul Tidak Diketahui'; // Coba 'episode' dulu, lalu 'title'
+    const releasedOn = currentEpisodeData.releasedOn || currentEpisodeData.released_on || 'Tanggal Rilis Tidak Diketahui'; // Coba 'releasedOn' dulu, lalu 'released_on' (jika lowercase)
+    // --- AKHIR PERBAIKAN ---
+
+    // --- PERBAIKAN: Ambil animeId dari anime.slug ---
+    const animeUrlFromApi = currentEpisodeData.anime?.slug; // Ambil URL Otakudesu dari data episode
+    let animeId = null;
+    if (animeUrlFromApi) {
+        const urlParts = animeUrlFromApi.split('/');
+        animeId = urlParts[urlParts.length - 2] || urlParts[urlParts.length - 1];
+        if (animeId.endsWith('/')) animeId = animeId.slice(0, -1);
+    }
+    const poster = currentEpisodeData.poster || 'https://via.placeholder.com/300x400?text=No+Image    ';
+
+    console.log(`[DEBUG Episode.html] Title yang akan ditampilkan: ${title}`); // Debug log
+    console.log(`[DEBUG Episode.html] ReleasedOn yang akan ditampilkan: ${releasedOn}`); // Debug log
+    console.log(`[DEBUG Episode.html] AnimeId yang diekstrak: ${animeId}`); // Debug log
+
+    // Update judul halaman dan header
+    document.title = `Nonton: ${title} - AnimeStream`;
+    document.getElementById('episode-title').textContent = title;
+    document.getElementById('info-title').textContent = title; // Gunakan title dari currentEpisodeData
+    document.getElementById('info-releasedOn').textContent = releasedOn; // Gunakan releasedOn dari currentEpisodeData
+
+    // Update link anime
+    if (animeId) {
+        // Gunakan animeId yang diekstrak untuk membuat link internal
+        const animeLink = `index.html?anime=${animeId}`;
+        document.getElementById('info-anime-link').href = animeLink;
+        document.getElementById('info-anime-link').textContent = 'Lihat Detail Anime';
+    } else {
+        document.getElementById('info-anime-link').href = '#';
+        document.getElementById('info-anime-link').textContent = 'Lihat Detail Anime (Tidak Tersedia)';
+        document.getElementById('info-anime-link').onclick = (e) => { e.preventDefault(); alert("Link detail anime tidak tersedia."); }; // Disable click
+    }
+
+    // Render video player
+    if (streamUrl) { // Gunakan streamUrl dari parameter
+        document.getElementById('stream-frame').src = streamUrl;
+    } else {
+        document.getElementById('stream-frame').src = '';
+        showError('URL Streaming Tidak Ditemukan (dari stream_url).');
+        return;
+    }
+
+    // Render server options
+    renderServerOptions(serverList); // Gunakan serverList dari parameter
+
+    // Render download options (dari currentEpisodeData.download_urls)
+    renderDownloadOptions(currentEpisodeData.download_urls || {});
+
+    // Render daftar episode di kolom kanan
+    renderEpisodeListForCurrentAnime(currentAnimeEpisodes, currentEpisodeData.slug); // Kirim slug episode saat ini
+
+    // Update tombol Prev/Next
+    updateNavButtonsFromList(currentAnimeEpisodes, currentEpisodeData.slug);
+}
 
         function showError(message) {
             document.getElementById('episode-title').textContent = `Error: ${message}`;
             document.getElementById('content-container').style.display = 'none';
             document.getElementById('error-display').style.display = 'block';
             document.getElementById('error-text').textContent = message;
-        }
-
-        function renderEpisode(streamUrl, serverList) {
-            if (!currentEpisodeData) return;
-
-            const title = currentEpisodeData.title || 'Judul Tidak Diketahui';
-            const animeUrlFromApi = currentEpisodeData.anime?.slug;
-            let animeId = null;
-            if (animeUrlFromApi) {
-                const urlParts = animeUrlFromApi.split('/');
-                animeId = urlParts[urlParts.length - 2] || urlParts[urlParts.length - 1];
-                if (animeId.endsWith('/')) animeId = animeId.slice(0, -1);
-            }
-            const poster = currentEpisodeData.poster || 'https://via.placeholder.com/300x400?text=No+Image';
-            const releasedOn = currentEpisodeData.releasedOn || 'Tanggal Rilis Tidak Diketahui';
-
-            // Update judul halaman dan header
-            document.title = `Nonton: ${title} - AnimeStream`;
-            document.getElementById('episode-title').textContent = title;
-            document.getElementById('info-title').textContent = title;
-            document.getElementById('info-releasedOn').textContent = releasedOn;
-
-            // Update link anime
-            if (animeId) {
-                // Gunakan animeId yang diekstrak untuk membuat link internal
-                const animeLink = `index.html?anime=${animeId}`;
-                document.getElementById('info-anime-link').href = animeLink;
-                document.getElementById('info-anime-link').textContent = 'Lihat Detail Anime';
-            } else {
-                // Jika animeId tidak bisa diekstrak, tampilkan pesan atau link ke halaman default
-                document.getElementById('info-anime-link').href = '#';
-                document.getElementById('info-anime-link').textContent = 'Lihat Detail Anime (Tidak Tersedia)';
-                document.getElementById('info-anime-link').onclick = (e) => { e.preventDefault(); alert("Link detail anime tidak tersedia."); }; // Disable click
-            }
-
-            // Render video player
-            if (streamUrl) {
-                document.getElementById('stream-frame').src = streamUrl;
-            } else {
-                document.getElementById('stream-frame').src = '';
-                showError('URL Streaming Tidak Ditemukan (dari stream_url).');
-                return;
-            }
-
-            // Render server options
-            renderServerOptions(serverList);
-
-            // Render download options (dari currentEpisodeData.download_urls)
-            renderDownloadOptions(currentEpisodeData.download_urls);
-
-            // Render daftar episode di kolom kanan
-            renderEpisodeListForCurrentAnime(currentAnimeEpisodes, currentEpisodeData.slug); // Kirim slug episode saat ini
-
-            // Update tombol Prev/Next
-            updateNavButtonsFromList(currentAnimeEpisodes, currentEpisodeData.slug);
         }
 
         function renderServerOptions(qualities) {
@@ -702,7 +717,6 @@
             container.innerHTML = html;
         }
 
-        // Switch Server Function - DIPERBAIKI untuk menghindari double endpoint path
         async function switchServerFromSamehadaku(serverId, serverName) {
             if (!serverId) {
                 console.error("ID server tidak valid untuk switchServerFromSamehadaku:", serverId);
@@ -713,12 +727,9 @@
             try {
                 console.log(`Mengambil URL server dari Samehadaku structure: ${serverId} (ID), server: ${serverName}`);
 
-                // --- PERBAIKAN: Ekstrak ID akhir dari serverId jika serverId adalah path lengkap ---
                 let extractedId = serverId;
-                if (serverId.startsWith('/')) { // Jika serverId adalah path lengkap
-                    // Ambil bagian terakhir dari path (ID server)
+                if (serverId.startsWith('/')) {
                     extractedId = serverId.split('/').pop();
-                    // Hilangkan trailing slash jika ada
                     if (extractedId.endsWith('/')) {
                         extractedId = extractedId.slice(0, -1);
                     }
