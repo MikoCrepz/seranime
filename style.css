@@ -714,3 +714,22 @@ button, .nav-link, .anime-card, .episode-item {
     #bug-report-form button:hover {
         background-color: var(--accent-hover);
     }
+
+    .apkd {
+    text-align: center;
+    margin: 0 auto;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    background-color: var(--secondary);
+    }
+
+    .con-apk {
+    text-align: center;
+    }
